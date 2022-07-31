@@ -1,15 +1,59 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Expenses from "./routes/expenses";
+import Invoices from "./routes/invoices";
+import Invoice from "./routes/invoice";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    {/* Need to wrap <App/> with <BrowerRouter/> */}
+
+    {/* 1. Basic Routes Structure */}
+    <BrowserRouter>
+      {/* These 3 <Route/> are siblings : they will not show up TOGETHER unless we use <Outlet/> in the parent Element */}
+      {/* <Routes>  
+        <Route path="/" element={<App />} />
+        <Route path="expenses" element={<Expenses />} />
+        <Route path="invoices" element={<Invoices />} />
+      </Routes> */}
+
+      {/* But if we wrap children Element with outter Element <Route> .... <Route/> */}
+      {/* They will be nested together */}
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route path="expenses" element={<Expenses />} />
+
+          <Route path="invoices" element={<Invoices />}>
+            <Route
+              index
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>Select an invoice</p>
+                </main>
+              }
+            />
+            <Route path=":invoiceId" element={<Invoice />} />
+          </Route>
+
+          {/* The "*" has special meaning here. It will match only when no other routes do. */}
+          <Route
+            path="*"
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>There's nothing here!</p>
+              </main>
+            }
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
